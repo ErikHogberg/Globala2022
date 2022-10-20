@@ -7,23 +7,17 @@ public class player : MonoBehaviour
     public float speed = 10f;
     public Rigidbody rb;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public Transform FrontWheels;
+    public Transform RearWheels;
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         float x = Input.GetAxis("Horizontal");
-        float y = Input.GetAxis("Vertical");
-        //Vector3 pos = transform.position;
-        //pos.x += x * Time.deltaTime * speed;
-        //pos.y += y * Time.deltaTime * speed;
-        //transform.position = pos;
+        float gas = Input.GetAxis("Vertical");
 
-        rb.AddForce(new Vector3(x, y, 0)
-                .normalized * speed);
+        // rb.AddForce(new Vector3(x, 0, 0)
+        //         .normalized * speed);
+
+        rb.AddForceAtPosition(new Vector3(x, 0, 0) * speed, FrontWheels.position);
     }
 }
