@@ -4,20 +4,25 @@ using UnityEngine;
 
 public class player : MonoBehaviour
 {
-    public float speed = 10f;
-    public Rigidbody rb;
+    public float speed = 10;
+    public float SteeringAngle = 20;
 
+    [Space]
+    public Rigidbody rb;
     public Transform FrontWheels;
     public Transform RearWheels;
 
     void FixedUpdate()
     {
         float x = Input.GetAxis("Horizontal");
+        float y = Input.GetAxis("Vertical");
         float gas = Input.GetAxis("Vertical");
 
-        // rb.AddForce(new Vector3(x, 0, 0)
-        //         .normalized * speed);
+        Quaternion steering = Quaternion.identity
+            * transform.rotation 
+            * Quaternion.AngleAxis(SteeringAngle * x, transform.up)
+        ;
 
-        rb.AddForceAtPosition(new Vector3(x, 0, 0) * speed, FrontWheels.position);
+        rb.AddForceAtPosition(steering * Vector3.forward * speed * gas, FrontWheels.position);
     }
 }
