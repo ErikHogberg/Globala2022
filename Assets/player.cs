@@ -11,18 +11,39 @@ public class player : MonoBehaviour
     public Rigidbody rb;
     public Transform FrontWheels;
     public Transform RearWheels;
+    public Transform CenterOfGravity;
 
+
+    private void Start() {
+        rb.centerOfMass = CenterOfGravity.localPosition;
+    }
     void FixedUpdate()
     {
-        float x = Input.GetAxis("Horizontal");
-        float y = Input.GetAxis("Vertical");
-        float gas = Input.GetAxis("Vertical");
+        if(!touchingGround) return; // kom ihåg utropstecken (betyder "not" och inverterar true/false)
 
-        Quaternion steering = Quaternion.identity
-            * transform.rotation 
-            * Quaternion.AngleAxis(SteeringAngle * x, transform.up)
+        // hämtar input från tangentbord
+        float x = Input.GetAxis("Horizontal"); // A och D, vänster och höger
+        float y = Input.GetAxis("Vertical"); // W och S, upp och ned
+        float gas = Input.GetAxis("Vertical"); // samma som y
+
+        // räkna ut rotation för styrning
+        Quaternion steering = Quaternion.identity // utgå från inget/tomt
+            * transform.rotation // lägg till vart bilen pekar nu
+            * Quaternion.AngleAxis(SteeringAngle * x, transform.up) // lägg till styrvinkel runt upp-axel
         ;
 
-        rb.AddForceAtPosition(steering * Vector3.forward * speed * gas, FrontWheels.position);
+        rb.AddForceAtPosition(
+            steering * Vector3.forward * speed * gas, 
+            FrontWheels.position
+        );
+    }
+    bool touchingGround = false;
+
+    void OnCollisionStay(Collision other) {
+        touchingGround = true;
+    }
+
+    private void OnCollisionExit(Collision other) {
+        touchingGround = false;
     }
 }
