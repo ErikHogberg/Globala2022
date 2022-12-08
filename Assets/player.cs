@@ -13,12 +13,19 @@ public class player : MonoBehaviour
     public Transform RearWheels;
     public Transform CenterOfGravity;
 
+    [Space]
+    public Timer timer;
+
 
     private void Start() {
         rb.centerOfMass = CenterOfGravity.localPosition;
     }
+
     void FixedUpdate()
     {
+
+        
+
         if(!touchingGround) return; // kom ihåg utropstecken (betyder "not" och inverterar true/false)
 
         // hämtar input från tangentbord
@@ -45,5 +52,12 @@ public class player : MonoBehaviour
 
     private void OnCollisionExit(Collision other) {
         touchingGround = false;
+    }
+
+    private void OnTriggerEnter(Collider other) {
+        if(other.gameObject.CompareTag("Goal")){ // Kollar om man gick i mål
+            Debug.Log("Win"); // skriver att man vann
+            timer.on = false; // stänger av timern
+        }
     }
 }
